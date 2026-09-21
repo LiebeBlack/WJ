@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="VoidMedia Studio — Suite de procesamiento multimedia 100% local en tu navegador. Sin servidores, sin uploads, sin rastros." />
+  <title>VoidMedia Studio · Suite Multimedia Local</title>
+
+  <!-- PWA-lite: instalable como app independiente -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+
+  <!-- ============================================================
+       DEPENDENCIAS EXTERNAS (CDN) — sin build step, listo para
+       desplegar en GitHub Pages sirviendo la rama main directamente.
+       ============================================================ -->
+
+  <!-- Tailwind CSS v4 (browser build oficial, Play CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- JSZip v3 (empaquetado de resultados en .zip) -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <!-- lamejs (encoder MP3 para el módulo de audio) -->
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- ============================================================
+       SEO — Google, Bing, DuckDuckGo, Yandex, Brave, Ecosia…
+       Sustituye TU-USUARIO/TU-REPO por tu dato real al desplegar.
+       ============================================================ -->
+  <link rel="canonical" href="https://TU-USUARIO.github.io/TU-REPO/" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="bingbot" content="index, follow" />
+  <meta name="author" content="VoidMedia Studio" />
+  <meta name="keywords" content="comprimir imágenes online, convertir webp, convertir avif, eliminar exif, optimizar svg, convertir heic, convertir tiff, raw a jpg, convertir audio wav mp3, limpiar texto, editor local, sin subir archivos, privacidad" />
+
+  <!-- Open Graph (WhatsApp, Telegram, Facebook, LinkedIn…) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="VoidMedia Studio" />
+  <meta property="og:title" content="VoidMedia Studio — Comprime y convierte archivos sin subirlos a ningún servidor" />
+  <meta property="og:description" content="Imágenes, SVG, audio y texto procesados 100% en tu navegador. Sin uploads, sin registro, sin rastros. Gratis y de código abierto." />
+  <meta property="og:url" content="https://TU-USUARIO.github.io/TU-REPO/" />
+  <meta property="og:image" content="https://TU-USUARIO.github.io/TU-REPO/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="es_ES" />
+
+  <!-- Twitter/X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="VoidMedia Studio — Suite multimedia 100% local" />
+  <meta name="twitter:description" content="Comprime, convierte y limpia archivos sin que salgan de tu navegador." />
+  <meta name="twitter:image" content="https://TU-USUARIO.github.io/TU-REPO/og.png" />
+
+  <!-- Verificación de propiedad (pega aquí tus tokens cuando los obtengas) -->
+  <!-- <meta name="google-site-verification" content="TOKEN_DE_GOOGLE_SEARCH_CONSOLE" /> -->
+  <!-- <meta name="msvalidate.01" content="TOKEN_DE_BING_WEBMASTER" /> -->
+  <!-- <meta name="yandex-verification" content="TOKEN_DE_YANDEX" /> -->
+
+  <!-- Datos estructurados: enriquece el resultado en Google y Bing -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "VoidMedia Studio",
+    "url": "https://TU-USUARIO.github.io/TU-REPO/",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Cualquiera (navegador web)",
+    "browserRequirements": "Requiere JavaScript",
+    "description": "Suite de procesamiento multimedia 100% local: compresión y conversión de imágenes, optimización de SVG, conversión de audio y limpieza de texto, sin subir archivos a ningún servidor.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+    "featureList": [
+      "Conversión de imágenes a WebP, JPEG, PNG y AVIF",
+      "Entrada de 38 formatos: TIFF, HEIC, JPEG XL, RAW, TGA, HDR, EXR…",
+      "Eliminación de metadatos EXIF",
+      "Optimización y limpieza de SVG",
+      "Conversión de audio a WAV y MP3 con Web Audio API",
+      "Limpieza de texto y código por lotes",
+      "Procesamiento 100% en el navegador sin servidores"
+    ]
+  }
+  </script>
+
+  <!-- (favicon ya declarado arriba como icon.svg) -->
+</head>
+
+<body class="bg-black text-zinc-200 font-sans antialiased min-h-screen overflow-x-hidden">
+
+  <!-- Accesibilidad: saltar directamente al contenido -->
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <noscript>
+    <div class="noscript-banner" role="alert">
+      <strong>VoidMedia Studio necesita JavaScript.</strong>
+      Todo el procesamiento ocurre en tu navegador: sin JavaScript no puede funcionar.
+    </div>
+  </noscript>
+
+  <!-- Fondo ambiental: auroras de neón + grano + rejilla -->
+  <div class="bg-fx" aria-hidden="true">
+    <div class="aurora aurora-a"></div>
+    <div class="aurora aurora-b"></div>
+    <div class="aurora aurora-c"></div>
+    <div class="grid-overlay"></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <!-- ============================ HEADER ============================ -->
+  <header class="relative z-30 border-b border-white/[0.06] glass-nav">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between gap-4">
+
+        <!-- Marca -->
+        <a href="#images" data-tab-link="images" class="flex items-center gap-3 group shrink-0">
+          <span class="logo-orb" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5">
+              <circle cx="12" cy="12" r="8.5" />
+              <circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none" />
+              <path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="flex flex-col leading-none">
+            <span class="text-[15px] font-bold tracking-tight text-white">
+              Void<span class="text-neon">Media</span>
+            </span>
+            <span class="mt-0.5 text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500 group-hover:text-zinc-400 transition-colors">
+              Studio · Local
+            </span>
+          </span>
+        </a>
+
+        <!-- Selector de acento neón -->
+        <div class="hidden md:flex items-center gap-2 pr-1" role="group" aria-label="Color de acento">
+          <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600 mr-1">Acento</span>
+          <button type="button" class="accent-dot is-cyan"    data-accent="cyan"    title="Cian"    aria-label="Acento cian"></button>
+          <button type="button" class="accent-dot is-purple" data-accent="purple"  title="Púrpura" aria-label="Acento púrpura"></button>
+          <button type="button" class="accent-dot is-emerald" data-accent="emerald" title="Esmeralda" aria-label="Acento esmeralda"></button>
+          <button type="button" class="accent-dot is-amber"  data-accent="amber"   title="Ámbar"   aria-label="Acento ámbar"></button>
+        </div>
+
+        <!-- Sello de privacidad -->
+        <div class="flex items-center gap-2">
+          <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-[11px] font-semibold text-emerald-300/90">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            100% local · sin servidores
+          </span>
+          <span class="hidden lg:inline text-[11px] text-zinc-600 font-mono">v1.3.1</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================= MAIN ============================= -->
+  <main id="main-content" class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
+
+    <!-- Título + descripción -->
+    <section class="pt-10 pb-8 sm:pt-14">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+        Procesa todo <span class="text-gradient">en tu máquina</span>.
+      </h1>
+      <p class="mt-3 max-w-2xl text-sm sm:text-[15px] leading-relaxed text-zinc-400">
+        Imágenes, SVG, audio y texto — comprimir, convertir, limpiar y empaquetar sin que un solo byte
+        salga de tu navegador. Todo ocurre en memoria; al cerrar la pestaña, no queda rastro.
+      </p>
+    </section>
+
+    <!-- ===== Contenedor de pestañas ===== -->
+    <div id="tab-container" class="glass-panel rounded-2xl">
+
+      <!-- Barra de pestañas -->
+      <nav id="tab-bar" class="flex flex-wrap items-center gap-1 border-b border-white/[0.06] p-2 sm:px-3" role="tablist" aria-label="Módulos">
+        <button type="button" role="tab" id="tab-btn-images"  data-tab="images"  aria-selected="true"  aria-controls="panel-images"
+                class="tab-btn is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="tab-ico"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M3.5 17.5 9 12.5l3.5 3.5 4-4 4 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Imágenes</span>
+          <span class="tab-badge">WEBP · AVIF · JPG · PNG</span>
+        </button>
+
+        <button type="button" role="tab" id="tab-btn-svg" data-tab="svg" aria-selected="false" aria-controls="panel-svg"
+                class="tab-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="tab-ico"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z" stroke-linejoin="round"/></svg>
+          <span>SVG</span>
+          <span class="tab-badge">LIMPIEZA</span>
+        </button>
+
+        <button type="button" role="tab" id="tab-btn-audio" data-tab="audio" aria-selected="false" aria-controls="panel-audio"
+                class="tab-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="tab-ico"><path d="M9 17V7l10-2v10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/></svg>
+          <span>Audio</span>
+          <span class="tab-badge">WAV · MP3</span>
+        </button>
+
+        <button type="button" role="tab" id="tab-btn-text" data-tab="text" aria-selected="false" aria-controls="panel-text"
+                class="tab-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="tab-ico"><path d="M5 6h14M5 10h14M5 14h9M5 18h6" stroke-linecap="round"/></svg>
+          <span>Texto</span>
+          <span class="tab-badge">BATCH</span>
+        </button>
+
+        <span class="ml-auto hidden lg:flex items-center gap-1.5 pl-3 text-[11px] text-zinc-600 font-mono select-none">
+          <span class="inline-block h-1.5 w-1.5 rounded-full bg-neon animate-pulse-soft"></span>
+          off·line ready
+        </span>
+      </nav>
+
+      <!-- ================================================================
+           PANEL: IMÁGENES
+           ================================================================ -->
+      <section id="panel-images" role="tabpanel" aria-labelledby="tab-btn-images" class="tab-panel is-visible p-4 sm:p-6">
+
+        <!-- Dropzone -->
+        <div id="images-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Añadir imágenes">
+          <input id="images-input" type="file" accept="image/*,.jpg,.jpeg,.jfif,.png,.apng,.gif,.bmp,.dib,.webp,.avif,.tif,.tiff,.heic,.heif,.hif,.avci,.jxl,.tga,.hdr,.pic,.exr,.pfm,.dng,.cr2,.cr3,.nef,.nrw,.arw,.srf,.sr2,.orf,.rw2,.raf,.pef,.srw,.x3f,.ico,.cur" multiple class="sr-only" />
+          <div class="dz-glow" aria-hidden="true"></div>
+          <div class="relative flex flex-col items-center gap-3 py-10 px-6 text-center">
+            <span class="dz-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-7 w-7"><path d="M12 16V4m0 0 4 4m-4-4-4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke-linecap="round"/></svg>
+            </span>
+            <p class="text-sm font-semibold text-zinc-200">Suelta tus imágenes aquí</p>
+            <p class="text-xs text-zinc-500">o haz clic para seleccionar · JPG, PNG, GIF, BMP, WebP, AVIF, TIFF, HEIC, JXL, TGA, HDR/EXR y RAW · lotes masivos</p>
+            <span class="mt-1 text-[10px] font-mono text-zinc-600">Los archivos nunca abandonan este dispositivo</span>
+          </div>
+        </div>
+
+        <!-- Panel de compatibilidad de formatos (v1.2) -->
+        <details id="images-compat" class="compat-card mt-4">
+          <summary class="compat-summary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4 shrink-0"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5" stroke-linecap="round"/></svg>
+            <span>Compatibilidad de formatos de entrada</span>
+            <span id="compat-ok-count" class="count-chip">0</span>
+            <span class="compat-caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="compat-groups" id="compat-groups"><!-- relleno por JS --></div>
+          <p class="mt-3 px-4 pb-4 text-[11px] leading-relaxed text-zinc-500">
+            <span class="text-emerald-300/90 font-semibold">Nativo</span>: lo decodifica tu navegador.
+            <span class="text-neon font-semibold">Bajo demanda</span>: se descarga un decodificador desde CDN solo al procesar ese formato (el archivo nunca sale de tu equipo).
+            <span class="text-zinc-500 font-semibold line-through">No viable</span>: no existe decodificación 100% local en el navegador hoy.
+          </p>
+        </details>
+
+        <!-- Opciones de conversión -->
+        <div class="mt-6 grid gap-5 lg:grid-cols-12">
+
+          <!-- Columna izquierda: ajustes -->
+          <div class="lg:col-span-4 space-y-5">
+            <div class="opt-card">
+              <h3 class="opt-title">Formato de salida</h3>
+              <div class="mt-3 grid grid-cols-2 gap-2" id="images-format-group" role="radiogroup" aria-label="Formato de salida">
+                <label class="radio-card"><input type="radio" name="img-format" value="image/webp" checked /><span>WebP</span></label>
+                <label class="radio-card"><input type="radio" name="img-format" value="image/jpeg" /><span>JPEG</span></label>
+                <label class="radio-card"><input type="radio" name="img-format" value="image/png" /><span>PNG</span></label>
+                <label class="radio-card"><input type="radio" name="img-format" value="image/avif" /><span>AVIF</span></label>
+                <label class="radio-card col-span-2"><input type="radio" name="img-format" value="all" /><span>Todo (genera las 4 variantes por imagen)</span></label>
+              </div>
+            </div>
+
+            <div class="opt-card">
+              <div class="flex items-center justify-between">
+                <h3 class="opt-title">Calidad</h3>
+                <output id="images-quality-out" class="mono-chip">82%</output>
+              </div>
+              <input id="images-quality" type="range" min="10" max="100" step="1" value="82" class="neon-range mt-3" />
+              <div class="mt-1.5 flex justify-between text-[10px] text-zinc-600 font-mono"><span>mínimo</span><span>lossless+</span></div>
+              <p class="mt-2 text-[11px] leading-relaxed text-zinc-500">Se ignora para PNG (sin pérdida). En modo «Todo» se aplica a WebP, JPEG y AVIF.</p>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Redimensionamiento</h3>
+              <div class="mt-3 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="images-resize-on" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Activar reescalado por canvas</span>
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="lbl-mini" for="images-max-w">Ancho (px)</label>
+                    <input id="images-max-w" type="number" min="16" max="12000" placeholder="p. ej. 1920" class="neon-input" disabled />
+                  </div>
+                  <div>
+                    <label class="lbl-mini" for="images-max-h">Alto (px)</label>
+                    <input id="images-max-h" type="number" min="16" max="12000" placeholder="p. ej. 1080" class="neon-input" disabled />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Modo de reescalado">
+                  <label class="radio-card"><input type="radio" name="img-resize-mode" value="fit" checked /><span>Ajustar (fit)</span></label>
+                  <label class="radio-card"><input type="radio" name="img-resize-mode" value="stretch" /><span>Estirar (stretch)</span></label>
+                </div>
+                <p class="text-[11px] leading-relaxed text-zinc-500">
+                  <span class="text-zinc-400 font-semibold">Ajustar:</span> la imagen entra completa dentro del límite, conservando proporción.
+                  <span class="text-zinc-400 font-semibold">Estirar:</span> fuerza las dimensiones exactas (deforma si no coincide el ratio).
+                </p>
+              </div>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Metadatos y empaquetado</h3>
+              <div class="mt-3 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="images-strip-exif" type="checkbox" class="neon-check" checked disabled />
+                  <span class="text-[13px] text-zinc-300">Eliminar EXIF / metadatos
+                    <span class="ml-1 rounded bg-neon/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-neon">siempre</span>
+                  </span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="images-zip-on" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Empaquetar resultado en <span class="font-mono text-neon">.zip</span></span>
+                </label>
+                <p class="text-[11px] leading-relaxed text-zinc-500">
+                  Si lo dejas desmarcado, se decide automáticamente: 1 archivo → descarga directa;
+                  varios → <span class="font-mono text-zinc-400">.zip</span> automático vía JSZip.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna derecha: cola y resultados -->
+          <div class="lg:col-span-8 space-y-5">
+            <div class="opt-card !p-0 overflow-hidden">
+              <div class="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+                <h3 class="opt-title !mt-0">Cola <span id="images-count" class="count-chip">0</span></h3>
+                <div class="flex items-center gap-2">
+                  <button id="images-clear" type="button" class="btn-ghost btn-xs">Vaciar</button>
+                  <button id="images-process" type="button" class="btn-primary btn-sm" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="m13 3-8 11h6l-1 7 8-11h-6l1-7Z" stroke-linejoin="round"/></svg>
+                    Procesar lote
+                  </button>
+                </div>
+              </div>
+              <div id="images-queue" class="max-h-[420px] overflow-y-auto divide-y divide-white/[0.04] scroll-slim">
+                <p class="px-4 py-10 text-center text-xs text-zinc-600" data-empty-state>Aún no hay imágenes en la cola.</p>
+              </div>
+            </div>
+
+            <div id="images-summary" class="result-banner hidden" role="status">
+              <div class="flex items-start gap-3">
+                <span class="banner-ico">✓</span>
+                <div class="min-w-0 flex-1">
+                  <p id="images-summary-title" class="text-sm font-semibold text-white">Lote procesado</p>
+                  <p id="images-summary-detail" class="mt-0.5 text-xs text-zinc-400 break-words"></p>
+                </div>
+                <button id="images-download" type="button" class="btn-primary btn-sm shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="M12 4v10m0 0 4-4m-4 4-4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" stroke-linecap="round"/></svg>
+                  Descargar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANEL: SVG
+           ================================================================ -->
+      <section id="panel-svg" role="tabpanel" aria-labelledby="tab-btn-svg" class="tab-panel p-4 sm:p-6" hidden>
+
+        <div class="grid gap-5 lg:grid-cols-12">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="opt-card">
+              <div class="flex items-center justify-between">
+                <h3 class="opt-title">Código SVG</h3>
+                <div class="flex gap-2">
+                  <button id="svg-load-files" type="button" class="btn-ghost btn-xs">Cargar .svg</button>
+                  <input id="svg-input" type="file" accept=".svg,image/svg+xml" multiple class="sr-only" />
+                  <button id="svg-clear-src" type="button" class="btn-ghost btn-xs">Limpiar</button>
+                </div>
+              </div>
+              <textarea id="svg-source" rows="14" spellcheck="false"
+                class="neon-textarea mt-3 font-mono" placeholder="Pega aquí tu código SVG… o carga archivos .svg"></textarea>
+              <p class="mt-2 text-[11px] text-zinc-500">Puedes pegar varios SVG concatenados: se detecta cada elemento <span class="font-mono">&lt;svg&gt;…&lt;/svg&gt;</span> y se procesan como lote.</p>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Opciones de limpieza</h3>
+              <div class="mt-3 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-strip-comments" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Comentarios <span class="font-mono text-zinc-500">&lt;!-- --&gt;</span></span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-strip-metadata" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Metadatos y editor tags</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-strip-title-desc" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors"><span class="font-mono">&lt;title&gt;</span> y <span class="font-mono">&lt;desc&gt;</span></span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-minify" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Minificar (colapsar espacios)</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-strip-editor-attrs" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Atributos de editor <span class="font-mono text-zinc-500">data-name…</span></span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-responsive" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Hacer responsive (quitar ancho/alto fijos)</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="svg-round" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Redondear decimales</span>
+                </label>
+                <div class="flex items-center gap-2">
+                  <input id="svg-round-digits" type="number" min="0" max="6" value="2" class="neon-input !w-16 !py-1 text-xs" disabled />
+                  <span class="text-[11px] text-zinc-500">dígitos</span>
+                </div>
+              </div>
+
+              <div class="mt-5 flex flex-wrap items-center gap-2 border-t border-white/[0.06] pt-4">
+                <button id="svg-clean" type="button" class="btn-primary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="m13 3-8 11h6l-1 7 8-11h-6l1-7Z" stroke-linejoin="round"/></svg>
+                  Optimizar
+                </button>
+                <button id="svg-download" type="button" class="btn-ghost btn-sm" disabled>Descargar</button>
+                <button id="svg-copy" type="button" class="btn-ghost btn-sm" disabled>Copiar</button>
+                <span class="ml-auto text-[11px] font-mono text-zinc-500" id="svg-stats"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-5">
+            <div class="opt-card !p-0 overflow-hidden">
+              <div class="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+                <h3 class="opt-title !mt-0">Resultado <span id="svg-count" class="count-chip">0</span></h3>
+                <button id="svg-zip" type="button" class="btn-ghost btn-xs" disabled>Empaquetar .zip</button>
+              </div>
+              <div id="svg-results" class="max-h-[520px] overflow-y-auto divide-y divide-white/[0.04] scroll-slim">
+                <p class="px-4 py-10 text-center text-xs text-zinc-600">Los SVG optimizados aparecerán aquí.</p>
+              </div>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Vista previa</h3>
+              <div id="svg-preview" class="svg-checker mt-3 flex min-h-[160px] items-center justify-center rounded-xl border border-white/[0.06] p-4 text-xs text-zinc-600">
+                Sin vista previa.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANEL: AUDIO
+           ================================================================ -->
+      <section id="panel-audio" role="tabpanel" aria-labelledby="tab-btn-audio" class="tab-panel p-4 sm:p-6" hidden>
+
+        <div class="grid gap-5 lg:grid-cols-12">
+          <!-- Cola -->
+          <div class="lg:col-span-7 space-y-5">
+            <div id="audio-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Añadir pistas de audio">
+              <input id="audio-input" type="file" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac,.aac" multiple class="sr-only" />
+              <div class="dz-glow" aria-hidden="true"></div>
+              <div class="relative flex flex-col items-center gap-3 py-9 px-6 text-center">
+                <span class="dz-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="h-7 w-7"><path d="M9 17V7l10-2v10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/></svg>
+                </span>
+                <p class="text-sm font-semibold text-zinc-200">Suelta tus pistas de audio</p>
+                <p class="text-xs text-zinc-500">MP3 · WAV · OGG · M4A · FLAC · AAC — decodificadas con Web Audio API en local</p>
+              </div>
+            </div>
+
+            <div class="opt-card !p-0 overflow-hidden">
+              <div class="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+                <h3 class="opt-title !mt-0">Pistas <span id="audio-count" class="count-chip">0</span></h3>
+                <div class="flex items-center gap-2">
+                  <button id="audio-clear" type="button" class="btn-ghost btn-xs">Vaciar</button>
+                  <button id="audio-process" type="button" class="btn-primary btn-sm" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="m13 3-8 11h6l-1 7 8-11h-6l1-7Z" stroke-linejoin="round"/></svg>
+                    Procesar pistas
+                  </button>
+                </div>
+              </div>
+              <div id="audio-queue" class="max-h-[400px] overflow-y-auto divide-y divide-white/[0.04] scroll-slim">
+                <p class="px-4 py-10 text-center text-xs text-zinc-600" data-empty-state>Aún no hay pistas en la cola.</p>
+              </div>
+            </div>
+
+            <div id="audio-summary" class="result-banner hidden" role="status">
+              <div class="flex items-start gap-3">
+                <span class="banner-ico">✓</span>
+                <div class="min-w-0 flex-1">
+                  <p id="audio-summary-title" class="text-sm font-semibold text-white">Pistas procesadas</p>
+                  <p id="audio-summary-detail" class="mt-0.5 text-xs text-zinc-400 break-words"></p>
+                </div>
+                <button id="audio-download" type="button" class="btn-primary btn-sm shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="M12 4v10m0 0 4-4m-4 4-4-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" stroke-linecap="round"/></svg>
+                  Descargar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ajustes -->
+          <div class="lg:col-span-5 space-y-5">
+            <div class="opt-card">
+              <h3 class="opt-title">Recorte</h3>
+              <div class="mt-3 grid grid-cols-2 gap-2">
+                <div>
+                  <label class="lbl-mini" for="audio-trim-start">Inicio (s) · vacío = 0</label>
+                  <input id="audio-trim-start" type="number" min="0" step="0.01" placeholder="0" class="neon-input" />
+                </div>
+                <div>
+                  <label class="lbl-mini" for="audio-trim-end">Fin (s) · vacío = final</label>
+                  <input id="audio-trim-end" type="number" min="0" step="0.01" placeholder="fin" class="neon-input" />
+                </div>
+              </div>
+              <p class="mt-2 text-[11px] text-zinc-500">Se aplica a todas las pistas al procesar.</p>
+            </div>
+
+            <div class="opt-card">
+              <div class="flex items-center justify-between">
+                <h3 class="opt-title">Ganancia</h3>
+                <output id="audio-gain-out" class="mono-chip">+0.0 dB</output>
+              </div>
+              <input id="audio-gain" type="range" min="-24" max="12" step="0.5" value="0" class="neon-range mt-3" />
+              <label class="mt-3 flex items-center gap-3 cursor-pointer group">
+                <input id="audio-normalize" type="checkbox" class="neon-check" />
+                <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Normalizar a <span class="font-mono text-neon">−1 dBFS</span> (usa el pico real, ignora la ganancia manual)</span>
+              </label>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Efectos</h3>
+              <div class="mt-3 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="audio-reverse" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Invertir la pista (reversed)</span>
+                </label>
+                <div class="flex items-center justify-between">
+                  <label class="lbl-mini !mb-0" for="audio-speed">Velocidad de reproducción</label>
+                  <output id="audio-speed-out" class="mono-chip">1.00×</output>
+                </div>
+                <input id="audio-speed" type="range" min="0.25" max="2" step="0.05" value="1" class="neon-range" />
+                <p class="text-[11px] text-zinc-500">Cambia duración y tono (pitch) a la vez — estilo cinta.</p>
+              </div>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Fade (entrada / salida)</h3>
+              <div class="mt-3 grid grid-cols-2 gap-2">
+                <div>
+                  <label class="lbl-mini" for="audio-fade-in">Fade-in (s)</label>
+                  <input id="audio-fade-in" type="number" min="0" max="60" step="0.1" value="0" class="neon-input" />
+                </div>
+                <div>
+                  <label class="lbl-mini" for="audio-fade-out">Fade-out (s)</label>
+                  <input id="audio-fade-out" type="number" min="0" max="60" step="0.1" value="0" class="neon-input" />
+                </div>
+              </div>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Formato de salida</h3>
+              <div class="mt-3 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Formato de audio">
+                <label class="radio-card"><input type="radio" name="audio-format" value="audio/wav" checked /><span>WAV · PCM 16-bit</span></label>
+                <label class="radio-card"><input type="radio" name="audio-format" value="audio/mpeg" /><span>MP3 · lamejs</span></label>
+              </div>
+
+              <div id="audio-mp3-quality" class="mt-3 hidden">
+                <div class="flex items-center justify-between">
+                  <label class="lbl-mini" for="audio-mp3-kbps">Bitrate MP3</label>
+                  <output id="audio-mp3-kbps-out" class="mono-chip">192 kbps</output>
+                </div>
+                <input id="audio-mp3-kbps" type="range" min="64" max="320" step="32" value="192" class="neon-range mt-2" />
+              </div>
+
+              <label class="mt-4 flex items-center gap-3 cursor-pointer group">
+                <input id="audio-zip-on" type="checkbox" class="neon-check" />
+                <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Forzar empaquetado <span class="font-mono text-neon">.zip</span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANEL: TEXTO
+           ================================================================ -->
+      <section id="panel-text" role="tabpanel" aria-labelledby="tab-btn-text" class="tab-panel p-4 sm:p-6" hidden>
+
+        <div class="grid gap-5 lg:grid-cols-12">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="opt-card">
+              <div class="flex items-center justify-between">
+                <h3 class="opt-title">Entrada <span id="text-files-count" class="count-chip">0</span></h3>
+                <div class="flex gap-2">
+                  <button id="text-load-files" type="button" class="btn-ghost btn-xs">Cargar .txt/.csv/.md/…</button>
+                  <input id="text-input" type="file" accept=".txt,.md,.csv,.json,.xml,.html,.css,.js,.ts,.py,.java,.log,.yml,.yaml,.sql,.sh,text/*" multiple class="sr-only" />
+                </div>
+              </div>
+              <textarea id="text-source" rows="12" spellcheck="false"
+                class="neon-textarea mt-3 font-mono" placeholder="Pega aquí el texto o código a limpiar… o carga varios archivos para procesarlos como lote."></textarea>
+              <p class="mt-2 text-[11px] text-zinc-500">Los archivos cargados se procesan de forma independiente y se conservan sus nombres en la descarga.</p>
+            </div>
+
+            <div class="opt-card">
+              <h3 class="opt-title">Reglas de limpieza</h3>
+              <div class="mt-3 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-rm-empty" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Eliminar líneas vacías</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-trim-lines" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Recortar espacios por línea</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-collapse-spaces" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Colapsar espacios múltiples</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-rm-trailing" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Sin línea final vacía</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-normalize-nl" type="checkbox" class="neon-check" checked />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Normalizar saltos a <span class="font-mono">LF</span></span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-tabs-to-spaces" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Tabulaciones → 4 espacios</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-collapse-empty" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Colapsar vacías consecutivas a 1</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-dedupe" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Eliminar líneas duplicadas</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input id="text-sort" type="checkbox" class="neon-check" />
+                  <span class="text-[13px] text-zinc-300 group-hover:text-white transition-colors">Ordenar líneas (natural)</span>
+                </label>
+                <div class="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Dirección de orden">
+                  <label class="radio-card"><input type="radio" name="text-sort-dir" value="asc" checked /><span>A–Z ↑</span></label>
+                  <label class="radio-card"><input type="radio" name="text-sort-dir" value="desc" /><span>Z–A ↓</span></label>
+                </div>
+              </div>
+              <p class="mt-2 text-[11px] text-zinc-500">El orden se aplica tras limpiar; respeta acentos y números (comparación natural).</p>
+
+              <div class="mt-5 flex flex-wrap items-center gap-2 border-t border-white/[0.06] pt-4">
+                <button id="text-clean" type="button" class="btn-primary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="m13 3-8 11h6l-1 7 8-11h-6l1-7Z" stroke-linejoin="round"/></svg>
+                  Limpiar
+                </button>
+                <button id="text-download" type="button" class="btn-ghost btn-sm" disabled>Descargar</button>
+                <button id="text-copy" type="button" class="btn-ghost btn-sm" disabled>Copiar</button>
+                <span class="ml-auto text-[11px] font-mono text-zinc-500" id="text-stats"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="opt-card !p-0 overflow-hidden lg:sticky lg:top-6">
+              <div class="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+                <h3 class="opt-title !mt-0">Resultado <span id="text-results-count" class="count-chip">0</span></h3>
+                <button id="text-zip" type="button" class="btn-ghost btn-xs" disabled>Empaquetar .zip</button>
+              </div>
+              <div id="text-results" class="max-h-[560px] overflow-y-auto divide-y divide-white/[0.04] scroll-slim">
+                <p class="px-4 py-10 text-center text-xs text-zinc-600">Los textos limpios aparecerán aquí.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Pie informativo + accesos SEO -->
+    <footer class="mt-10 border-t border-white/[0.06] pt-8 pb-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-600">
+        <p>VoidMedia Studio — procesamiento multimedia client-side. Sin cookies, sin analytics, sin red.</p>
+        <p class="font-mono">Tailwind v4 · JSZip · Web Audio API · Canvas · lamejs</p>
+      </div>
+      <nav aria-label="Herramientas" class="footer-links mt-4 flex flex-wrap justify-center gap-x-5 gap-y-2">
+        <a href="comprimir-imagenes.html">Comprimir imágenes</a>
+        <a href="convertir-webp-avif.html">Convertir a WebP/AVIF</a>
+        <a href="optimizar-svg.html">Optimizar SVG</a>
+        <a href="convertir-audio.html">Convertir audio</a>
+        <a href="limpiar-texto.html">Limpiar texto</a>
+      </nav>
+    </footer>
+  </main>
+
+  <!-- Toasts -->
+  <div id="toast-root" class="fixed bottom-5 right-5 z-50 flex w-[min(360px,calc(100vw-2.5rem))] flex-col gap-2" aria-live="polite"></div>
+
+  <!-- Módulos (orden de dependencias) -->
+  <script src="js/utils/zipper.js"></script>
+  <script src="js/modules/decoders/hdr.js"></script>
+  <script src="js/modules/images.js"></script>
+  <script src="js/modules/svg.js"></script>
+  <script src="js/modules/audio.js"></script>
+  <script src="js/modules/text.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

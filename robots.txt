@@ -1,0 +1,11 @@
+# VoidMedia Studio — reglas para rastreadores
+# Google, Bing, DuckDuckGo, Yandex, Brave, Ecosia y demás robots son bienvenidos.
+
+User-agent: *
+Allow: /
+
+# Recursos que los crawlers no necesitan indexar
+Disallow: /js/modules/decoders/
+
+# Sitemap (Bing, Yandex y otros lo leen directamente; Google vía Search Console)
+Sitemap: https://TU-USUARIO.github.io/TU-REPO/sitemap.xml

@@ -1,0 +1,18 @@
+{
+  "name": "VoidMedia Studio",
+  "short_name": "VoidMedia",
+  "description": "Suite de procesamiento multimedia 100% local en tu navegador: imágenes, SVG, audio y texto sin servidores.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

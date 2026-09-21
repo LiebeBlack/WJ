@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <title>Optimizar y limpiar SVG online gratis — minificar sin SVGO · VoidMedia Studio</title>
+  <meta name="description" content="Limpia y minifica código SVG online: elimina comentarios, metadatos de Inkscape e Illustrator, title/desc y atributos de editor. Hazlo responsive y redondea decimales. 100% en tu navegador, sin subir nada." />
+  <link rel="canonical" href="https://TU-USUARIO.github.io/TU-REPO/optimizar-svg.html" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Optimizar y limpiar SVG online sin subir archivos" />
+  <meta property="og:description" content="Minifica SVG, elimina metadatos de editores y hazlos responsive. Privado y gratis." />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Qué información se elimina de mi SVG?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Comentarios, etiquetas metadata, elementos de Inkscape (sodipodi:*) e Illustrator/Adobe (inkscape:*), title y desc, atributos de editor como data-name, y espacios innecesarios. La geometría y los estilos permanecen intactos." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿El minificador rompe textos o estilos del SVG?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. El minificador es consciente del contenido: protege los bloques <style> y <text> donde los espacios son significativos y solo colapsa el whitespace fuera de ellos." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo hago un SVG responsive?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Activa la opción correspondiente: se eliminan los atributos width y height fijos y se conserva el viewBox, de modo que el gráfico escale al contenedor que lo albergue." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Puede convertir EPS, AI o CDR a SVG?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No existe decodificación fiable de vectores cerrados en el navegador. Exporta desde Illustrator, CorelDRAW o Inkscape a SVG o PNG y procesa aquí el resultado." }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="bg-black">
+  <a href="index.html" class="landing-back">← VoidMedia Studio</a>
+
+  <section class="landing-hero">
+    <h1>Optimizar y limpiar SVG online, sin subir archivos</h1>
+    <p>
+      Pega tu código o arrastra tus <strong>.svg</strong>: elimina comentarios, metadatos de Inkscape e
+      Illustrator, <code>&lt;title&gt;</code>/<code>&lt;desc&gt;</code> y atributos de editor. Minifica sin romper
+      <code>&lt;style&gt;</code> ni <code>&lt;text&gt;</code>, hazlos responsive y reduce su peso hasta un 60%.
+    </p>
+    <a class="landing-cta" href="index.html#svg">Optimizar mis SVG →</a>
+  </section>
+
+  <section class="landing-features">
+    <div class="landing-card">
+      <h2>Lote ilimitado</h2>
+      <p>Pega varios SVG concatenados o carga muchos archivos: se procesan en serie con estadísticas por cada uno.</p>
+    </div>
+    <div class="landing-card">
+      <h2>Vista previa y checker</h2>
+      <p>Mira el resultado renderizado sobre tablero de transparencias antes de descargar nada.</p>
+    </div>
+    <div class="landing-card">
+      <h2>Redondeo de decimales</h2>
+      <p>Recorta la precisión numérica de paths y atributos de 0 a 6 dígitos para exprimir cada byte.</p>
+    </div>
+    <div class="landing-card">
+      <h2>Copiar o descargar</h2>
+      <p>Copia al portapapeles, descarga individual o ZIP automático con JSZip — siempre en local.</p>
+    </div>
+  </section>
+
+  <section class="landing-faq">
+    <h2>Preguntas frecuentes</h2>
+    <details open>
+      <summary>¿Qué información se elimina de mi SVG?</summary>
+      <p>Comentarios, etiquetas metadata, elementos de Inkscape (sodipodi:*) e Illustrator (inkscape:*), title y desc, atributos de editor como data-name, y espacios innecesarios. La geometría y los estilos permanecen intactos.</p>
+    </details>
+    <details>
+      <summary>¿El minificador rompe textos o estilos del SVG?</summary>
+      <p>No. El minificador es consciente del contenido: protege los bloques de estilo y texto donde los espacios son significativos y solo colapsa el whitespace fuera de ellos.</p>
+    </details>
+    <details>
+      <summary>¿Cómo hago un SVG responsive?</summary>
+      <p>Activa la opción correspondiente: se eliminan los atributos de ancho y alto fijos y se conserva el viewBox, de modo que el gráfico escale al contenedor que lo albergue.</p>
+    </details>
+    <details>
+      <summary>¿Puede convertir EPS, AI o CDR a SVG?</summary>
+      <p>No existe decodificación fiable de vectores cerrados en el navegador. Exporta desde Illustrator, CorelDRAW o Inkscape a SVG o PNG y procesa aquí el resultado.</p>
+    </details>
+  </section>
+</body>
+</html>
